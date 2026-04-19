@@ -6,7 +6,7 @@
 
 *A structural framework for modeling the operational infrastructure behind cyber campaigns.*
 
-[**Website**](https://iim.malwarebox.eu) · [**Specification**](https://iim.malwarebox.eu/spec) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
+[**Website**](https://iim.malwarebox.eu) · [**Specification**](https://github.com/MalwareboxEU/IIM/blob/main/spec/iim-v1.1-spec.md) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
 
 ---
 
@@ -117,7 +117,7 @@ The same campaign maps to ATT&CK independently:
 Both annotations coexist on the chain. Neither is redundant. IIM describes the infrastructure the actor built; ATT&CK describes what happens on the victim.
 
 More fully annotated reference chains are in [`reference-chains/`](./reference-chains/).
-
+(Soon to be released)
 ## Positioning Relative to Existing Frameworks
 
 IIM is designed to compose with existing standards, not compete with them.
@@ -141,7 +141,7 @@ Where an IOC feed says *"block these 47 domains that were Gamaredon C2 last week
 Pattern feeds are longer-lived than IOCs because they describe the adversary's workflow, not their disposable artifacts. A well-defined pattern continues to match new infrastructure for months as the adversary rotates specific domains, IPs, and hosts within the same operational logic.
 
 See [`feeds/`](./feeds/) for reference pattern feeds.
-
+(Soon to be released)
 ## Repository Structure
 
 ```
@@ -155,13 +155,11 @@ See [`feeds/`](./feeds/) for reference pattern feeds.
 │   ├── iim-techniques-v1.0.json      26 techniques with definitions and examples
 │   └── README.md                      catalog design principles and governance
 ├── reference-chains/
-│   ├── mb-0001-gamaredon/            annotated Gamaredon campaigns
-│   ├── mb-0002-apt28/                annotated APT28 campaigns
 │   └── ...
 ├── feeds/
-│   └── pattern-feeds/                 published pattern feeds in JSON
+│   └── ...
 └── tools/
-    └── validator/                     CLI tool for validating chains against schema
+    └── iim-tools/                     IIM Tools
 ```
 
 ## Status
