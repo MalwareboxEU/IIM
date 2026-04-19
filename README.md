@@ -1,6 +1,7 @@
 <div align="center">
 
-# IIM
+# IIM 
+<img src="iim-logo.svg" alt="drawing" width="200"/>
 
 ### Infrastructure Intelligence Model
 
