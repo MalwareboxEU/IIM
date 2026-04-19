@@ -1,0 +1,10 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bottom chevron (widest) -->
+          <path d="M 30,150 L 100,180 L 170,150 L 170,170 L 100,200 L 30,170 Z" fill="#2F6BFF" opacity="0.45"/>
+          <!-- Middle chevron -->
+          <path d="M 45,115 L 100,140 L 155,115 L 155,135 L 100,160 L 45,135 Z" fill="#2F6BFF" opacity="0.75"/>
+          <!-- Top chevron (narrowest) -->
+          <path d="M 60,80 L 100,100 L 140,80 L 140,100 L 100,120 L 60,100 Z" fill="#2F6BFF"/>
+          <!-- Plankton capstone marker -->
+          <circle cx="100" cy="55" r="12" fill="#3ad0a8"/>
+        </svg>
