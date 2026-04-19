@@ -1,0 +1,538 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iim.malwarebox.eu/schema/iim-v1.1-schema.json",
+  "title": "IIM v1.1 Schema",
+  "description": "JSON Schema for Infrastructure Intelligence Model (IIM) chains, patterns, and feeds. Version 1.1 (draft).",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/chain"
+    },
+    {
+      "$ref": "#/$defs/pattern"
+    },
+    {
+      "$ref": "#/$defs/feed"
+    }
+  ],
+  "$defs": {
+    "iim_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$",
+      "description": "IIM specification version that this document conforms to.",
+      "$comment": "The pattern is intentionally loose (major.minor[.patch]) rather than enumerated, so forward-compatible parsers can accept minor version increments without schema updates. Consumers MUST check iim_version against their supported range per the specification."
+    },
+    "chain_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._\\-]{2,127}$",
+      "description": "Stable chain identifier. Alphanumeric plus dot, underscore, hyphen."
+    },
+    "pattern_id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,6}-F-[0-9]{4,}$",
+      "description": "Pattern identifier following <PREFIX>-F-#### convention (e.g. MB-F-0023)."
+    },
+    "technique_id": {
+      "type": "string",
+      "pattern": "^IIM-T[0-9]{3}$",
+      "description": "IIM technique identifier (e.g. IIM-T019)."
+    },
+    "entity_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-zA-Z0-9_\\-]+$",
+      "description": "Chain-local entity identifier. Must be unique within the chain."
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "entry",
+        "redirector",
+        "staging",
+        "payload",
+        "c2"
+      ],
+      "description": "Semantic position of an entity within a chain."
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "url",
+        "domain",
+        "ip",
+        "file",
+        "hash",
+        "email",
+        "certificate",
+        "asn"
+      ],
+      "description": "Observable artifact type. Uninterpreted."
+    },
+    "relation_type": {
+      "type": "string",
+      "enum": [
+        "download",
+        "redirect",
+        "drops",
+        "execute",
+        "connect",
+        "resolves-to",
+        "references",
+        "communicates-with"
+      ],
+      "description": "Directed relation between two entities."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "likely",
+        "tentative"
+      ],
+      "description": "Analyst confidence in the annotation. Applies to chains and role/technique assignments."
+    },
+    "match_semantics": {
+      "type": "string",
+      "enum": [
+        "strict",
+        "structural",
+        "fuzzy"
+      ],
+      "description": "How a pattern matches against candidate chains."
+    },
+    "tlp": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "green",
+        "amber",
+        "amber+strict",
+        "red"
+      ],
+      "description": "Traffic Light Protocol handling instruction for feed content."
+    },
+    "entity": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "value"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/entity_id"
+        },
+        "type": {
+          "$ref": "#/$defs/entity_type"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "$comment": "Type-specific validation (URL format, IP format, hash length) is intentionally not enforced at the schema level to preserve flexibility. Validators may add stricter checks per entity type."
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this entity was first observed (RFC 3339)."
+        },
+        "source": {
+          "type": "string",
+          "description": "Where the observation originated (sensor, analyst, feed name)."
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Free-form references: sample hashes, URLs, report citations."
+        }
+      }
+    },
+    "chain_position": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "role"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "$ref": "#/$defs/entity_id"
+        },
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "techniques": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/technique_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "role_confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "technique_confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "needs_review": {
+          "type": "boolean",
+          "default": false
+        },
+        "review_notes": {
+          "type": "string"
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "type"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/entity_id"
+        },
+        "to": {
+          "$ref": "#/$defs/entity_id"
+        },
+        "type": {
+          "$ref": "#/$defs/relation_type"
+        },
+        "sequence_order": {
+          "type": "integer",
+          "minimum": 0,
+          "$comment": "Uniqueness and monotonicity are semantic constraints enforced by validators, not by the JSON Schema itself."
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        }
+      }
+    },
+    "chain": {
+      "type": "object",
+      "required": [
+        "iim_version",
+        "chain_id",
+        "entities",
+        "chain",
+        "relations"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "iim_version": {
+          "$ref": "#/$defs/iim_version"
+        },
+        "chain_id": {
+          "$ref": "#/$defs/chain_id"
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable chain title."
+        },
+        "description": {
+          "type": "string"
+        },
+        "actor_id": {
+          "type": "string",
+          "description": "Attributed actor ID (e.g. MB-0001). Attribution remains optional."
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "needs_review": {
+          "type": "boolean",
+          "default": false
+        },
+        "import_source": {
+          "type": "string",
+          "description": "If the chain was imported from STIX or similar, record the origin format."
+        },
+        "entities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/entity"
+          }
+        },
+        "chain": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/chain_position"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relation"
+          }
+        },
+        "attack_annotations": {
+          "type": "array",
+          "description": "Optional MITRE ATT&CK annotations for the same campaign. Complementary to IIM techniques.",
+          "items": {
+            "type": "object",
+            "required": [
+              "technique_id"
+            ],
+            "patternProperties": {
+              "^x_": {}
+            },
+            "additionalProperties": false,
+            "properties": {
+              "technique_id": {
+                "type": "string",
+                "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$",
+                "description": "ATT&CK technique or sub-technique ID."
+              },
+              "name": {
+                "type": "string"
+              },
+              "tactic": {
+                "type": "string"
+              },
+              "comment": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "pattern_shape_position": {
+      "type": "object",
+      "required": [
+        "role"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "techniques": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/technique_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "optional": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this position must appear in a matching chain. Optional positions enable structural-with-gaps matches."
+        }
+      }
+    },
+    "pattern_relation": {
+      "type": "object",
+      "required": [
+        "from_position",
+        "to_position",
+        "type"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "from_position": {
+          "type": "integer",
+          "minimum": 0,
+          "$comment": "Upper bound (len(shape) - 1) is a semantic constraint enforced by validators, not by the JSON Schema."
+        },
+        "to_position": {
+          "type": "integer",
+          "minimum": 0,
+          "$comment": "Upper bound (len(shape) - 1) is a semantic constraint enforced by validators, not by the JSON Schema."
+        },
+        "type": {
+          "$ref": "#/$defs/relation_type"
+        }
+      }
+    },
+    "pattern": {
+      "type": "object",
+      "required": [
+        "pattern_id",
+        "name",
+        "iim_version",
+        "shape",
+        "relations"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "pattern_id": {
+          "$ref": "#/$defs/pattern_id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "iim_version": {
+          "$ref": "#/$defs/iim_version"
+        },
+        "match_semantics": {
+          "$ref": "#/$defs/match_semantics",
+          "default": "structural"
+        },
+        "shape": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/pattern_shape_position"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pattern_relation"
+          }
+        },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chain_id"
+          },
+          "description": "Chain IDs this pattern was abstracted from."
+        },
+        "actor_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Actors this pattern is known to represent."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 40
+          }
+        }
+      }
+    },
+    "feed_publisher": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "public_key": {
+          "type": "string",
+          "description": "Optional PGP public key for feed signature verification."
+        }
+      }
+    },
+    "feed": {
+      "type": "object",
+      "required": [
+        "feed_id",
+        "iim_version",
+        "publisher",
+        "patterns"
+      ],
+      "patternProperties": {
+        "^x_": {}
+      },
+      "additionalProperties": false,
+      "properties": {
+        "feed_id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._\\-]{2,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iim_version": {
+          "$ref": "#/$defs/iim_version"
+        },
+        "publisher": {
+          "$ref": "#/$defs/feed_publisher"
+        },
+        "tlp": {
+          "$ref": "#/$defs/tlp",
+          "default": "clear"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "signature": {
+          "type": "string",
+          "description": "Detached signature of the patterns array. Format and algorithm are defined by the publisher; consumers verify using the publisher's public_key field. No normative signature algorithm at v1.1."
+        },
+        "patterns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pattern"
+          }
+        }
+      }
+    }
+  },
+  "$comment": "Every IIM document is exactly ONE of: chain, pattern, or feed. Fields prefixed x_ are reserved for implementation-specific extensions and are allowed on every object (STIX-style extension pattern)."
+}
