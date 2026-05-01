@@ -7,7 +7,7 @@
 
 *A structural framework for modeling the operational infrastructure behind cyber campaigns.*
 
-[**Website**](https://iim.malwarebox.eu) · [**Specification**](https://github.com/MalwareboxEU/IIM/blob/main/spec/iim-v1.1-spec.md) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
+[**Website**](https://iim.malwarebox.eu) · [**IIM Workbench**](https://github.com/MalwareboxEU/IIM-Workbench) · [**Specification**](https://github.com/MalwareboxEU/IIM/blob/main/spec/iim-v1.1-spec.md) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
 
 ---
 
@@ -15,11 +15,11 @@
 
 ## What is IIM?
 
-IIM is a structural framework that sits **between IOCs and MITRE ATT&CK** — describing how adversary infrastructure is actually composed, routed, gated, and resolved. It is the missing layer that neither indicator feeds nor behavioral taxonomies address.
+IIM is a structural framework that sits **between IOCs and MITRE ATT&CK** describing how adversary infrastructure is actually composed, routed, gated, and resolved. It is the missing layer that neither indicator feeds nor behavioral taxonomies address.
 
 - **IOCs** describe what existed at a moment in time. They decay within days.
 - **ATT&CK** describes what adversaries do at the endpoint level. It deliberately abstracts away implementation.
-- **IIM** describes the operational infrastructure itself — structural, stable across campaigns, resistant to rotation.
+- **IIM** describes the operational infrastructure itself - structural, stable across campaigns, resistant to rotation.
 
 IIM does not replace ATT&CK or STIX. It complements them. A campaign is annotated on both axes independently; neither annotation is redundant.
 
@@ -44,8 +44,8 @@ IIM separates observation from interpretation across four layers:
 
 On top of these, two compositional units:
 
-- **Chains** — concrete, directed sequences of role positions describing an observed execution
-- **Patterns** — structural abstractions of chains, independent of specific entities, used for federated detection
+- **Chains** - concrete, directed sequences of role positions describing an observed execution
+- **Patterns** - structural abstractions of chains, independent of specific entities, used for federated detection
 
 ## The Five Role Types
 
@@ -73,7 +73,7 @@ IIM v1.0 defines **26 infrastructure techniques** across five categories:
 | **Gating** | 5 | Geofenced, User-Agent, Request Fingerprinting, Time-Window, Single-Use Token |
 | **Composition** | 3 | Archive Container, Nested Container, Open Directory Exposure |
 
-Every technique describes a **property of infrastructure itself** — hosting, routing, resolution, gating, or structural composition. Endpoint behavior (execution, persistence, file formats) is deliberately excluded and covered by ATT&CK.
+Every technique describes a **property of infrastructure itself** - hosting, routing, resolution, gating, or structural composition. Endpoint behavior (execution, persistence, file formats) is deliberately excluded and covered by ATT&CK.
 
 See [`techniques/iim-techniques-v1.0.json`](./techniques/iim-techniques-v1.0.json) for the full machine-readable catalog, and [`techniques/README.md`](./techniques/README.md) for the design principles.
 
@@ -131,13 +131,13 @@ IIM is designed to compose with existing standards, not compete with them.
 | **Kill Chain** | Temporal phases of intrusion | Structural composition within each phase |
 | **IOC Feeds** | Point-in-time artifacts | Patterns that outlive specific IOCs |
 
-ACDP scoring (the Malwarebox defensive-prioritization methodology) consumes IIM outputs directly — infrastructure patterns become inputs to actor-specific control prioritization.
+ACDP scoring (the Malwarebox defensive-prioritization methodology) consumes IIM outputs directly - infrastructure patterns become inputs to actor-specific control prioritization.
 
 ## Pattern-Based Feeds
 
 The operational output of IIM is **pattern-based feeds**, not IOC feeds.
 
-Where an IOC feed says *"block these 47 domains that were Gamaredon C2 last week"*, an IIM pattern feed says *"this is the structural pattern of Gamaredon delivery chains — match any infrastructure that follows this structure."*
+Where an IOC feed says *"block these 47 domains that were Gamaredon C2 last week"*, an IIM pattern feed says *"this is the structural pattern of Gamaredon delivery chains, match any infrastructure that follows this structure."*
 
 Pattern feeds are longer-lived than IOCs because they describe the adversary's workflow, not their disposable artifacts. A well-defined pattern continues to match new infrastructure for months as the adversary rotates specific domains, IPs, and hosts within the same operational logic.
 
@@ -179,12 +179,12 @@ v1.1 is targeted for stable release once the validator CLI and reference chain l
 
 IIM is an open framework. Contributions are welcome in several forms:
 
-- **Reference chains** — fully annotated real campaigns (from your own research or public reporting) as JSON files in `reference-chains/`
-- **Technique proposals** — new infrastructure techniques for future catalog versions, following the scope rule in `techniques/README.md`
-- **Tooling** — validators, converters, visualizers, STIX exporters
-- **Critique** — challenges to role taxonomy, technique boundaries, or structural decisions
+- **Reference chains** - fully annotated real campaigns (from your own research or public reporting) as JSON files in `reference-chains/`
+- **Technique proposals** - new infrastructure techniques for future catalog versions, following the scope rule in `techniques/README.md`
+- **Tooling** - validators, converters, visualizers, STIX exporters
+- **Critique** - challenges to role taxonomy, technique boundaries, or structural decisions
 
-Open an issue or pull request. Technique proposals must include a justification that the proposed technique describes **infrastructure, not endpoint behavior** — the scope boundary against ATT&CK is strict by design.
+Open an issue or pull request. Technique proposals must include a justification that the proposed technique describes **infrastructure, not endpoint behavior** - the scope boundary against ATT&CK is strict by design.
 
 ## Citation
 
