@@ -200,6 +200,8 @@ Malwarebox Research. https://iim.malwarebox.eu
 
 The IIM specification, technique catalog, and reference chains are released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Tooling in this repository is released under Apache 2.0. You may use, adapt, and redistribute both freely with attribution.
 
+Copyright © 2026 Robin Dost / Malwarebox
+
 ---
 
 <div align="center">
