@@ -7,7 +7,7 @@
 
 *A structural framework for modeling the operational infrastructure behind cyber campaigns.*
 
-[**Website**](https://iim.malwarebox.eu) · [**IIM Workbench**](https://github.com/MalwareboxEU/IIM-Workbench) · [**Specification**](https://github.com/MalwareboxEU/IIM/blob/main/spec/iim-v1.1-spec.md) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
+[**Website**](https://iim.malwarebox.eu) · [**IIM Workbench**](https://github.com/MalwareboxEU/IIM-Workbench) · [**IIMQL**](https://github.com/MalwareboxEU/IIMQL) · [**Specification**](https://github.com/MalwareboxEU/IIM/blob/main/spec/iim-v1.1-spec.md) · [**Technique Catalog**](./techniques/iim-techniques-v1.0.json) · [**Malwarebox**](https://malwarebox.eu)
 
 ---
 
